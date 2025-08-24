@@ -1,0 +1,23 @@
+{
+    "name": "aikyo-basic-template",
+    "version": "1.0.0",
+    "description": "",
+    "homepage": "https://github.com/akazdayo/aikyo-basic-template#readme",
+    "bugs": {
+        "url": "https://github.com/akazdayo/aikyo-basic-template/issues"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/akazdayo/aikyo-basic-template.git"
+    },
+    "license": "MIT",
+    "author": "",
+    "type": "commonjs",
+    "main": "companion.ts",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "dependencies": {
+        "@ai-sdk/anthropic": "1.2.12"
+    }
+}
