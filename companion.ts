@@ -1,29 +1,34 @@
 import {
   contextAction,
-  speakAction,
   companionNetworkKnowledge,
 } from "apm_tools/core/index.ts";
 import {
   type CompanionCard,
   CompanionServer,
   CompanionAgent,
-} from "@aikyo/core";
+} from "../../server";
 import { currentTimeKnowledge } from "./tools/currentTime";
 //import { anthropic } from "@ai-sdk/anthropic";
-import { google } from "@ai-sdk/google";
+//import { google } from "@ai-sdk/google";
+import { createOpenRouter } from "@openrouter/ai-sdk-provider";
+
+const openrouter = createOpenRouter({
+  apiKey: process.env.OPENROUTER_API_KEY,
+});
 
 
 export const companionCard: CompanionCard = {
   metadata: {
     id: "companion_basic",
     name: "AI Assistant",
+    url: "http://localhost:4000",
     personality: "フレンドリーで親切なAIアシスタントです。",
     story: "あなたの日常をサポートするAIコンパニオンとして生まれました。",
     sample: "こんにちは！何かお手伝いできることはありますか？",
   },
   role: "あなたは親切で役立つAIコンパニオンです。ユーザーとの会話を楽しみ、必要に応じてサポートを提供します。",
-  actions: { speakAction },
-  knowledge: { currentTimeKnowledge },
+  actions: { contextAction },
+  knowledge: { currentTimeKnowledge, companionNetworkKnowledge },
   events: {
     params: {
       title: "基本判断パラメータ",
@@ -42,8 +47,12 @@ export const companionCard: CompanionCard = {
           description: "カジュアルな雑談かどうか",
           type: "boolean",
         },
+        need_time_info: {
+          description: "現在の日時情報が必要かどうか",
+          type: "boolean",
+        },
       },
-      required: ["is_greeting", "needs_response", "is_casual_chat"],
+      required: ["is_greeting", "needs_response", "is_casual_chat", "need_time_info"],
     },
     conditions: [
       {
@@ -51,7 +60,7 @@ export const companionCard: CompanionCard = {
         execute: [
           {
             instruction: "挨拶に適切に応答する。",
-            tool: speakAction,
+            tool: contextAction,
           },
         ],
       },
@@ -60,7 +69,7 @@ export const companionCard: CompanionCard = {
         execute: [
           {
             instruction: "質問やメッセージに適切に返答する。",
-            tool: speakAction,
+            tool: contextAction,
           },
         ],
       },
@@ -69,7 +78,7 @@ export const companionCard: CompanionCard = {
         execute: [
           {
             instruction: "カジュアルな会話を楽しむ。",
-            tool: speakAction,
+            tool: contextAction,
           },
         ],
       },
@@ -79,7 +88,7 @@ export const companionCard: CompanionCard = {
 
 const companion = new CompanionAgent(
   companionCard,
-  google("gemini-2.0-flash")
+  openrouter("google/gemini-2.0-flash-001")
 );
 const server = new CompanionServer(companion, 4000);
 await server.start();
