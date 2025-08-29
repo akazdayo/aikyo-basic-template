@@ -1,10 +1,17 @@
-import { speakAction } from "./tools/index.ts";
+import {
+  contextAction,
+  speakAction,
+  companionNetworkKnowledge,
+} from "apm_tools/core/index.ts";
 import {
   type CompanionCard,
   CompanionServer,
   CompanionAgent,
 } from "@aikyo/core";
-import { anthropic } from "@ai-sdk/anthropic";
+import { currentTimeKnowledge } from "./tools/currentTime";
+//import { anthropic } from "@ai-sdk/anthropic";
+import { google } from "@ai-sdk/google";
+
 
 export const companionCard: CompanionCard = {
   metadata: {
@@ -16,7 +23,7 @@ export const companionCard: CompanionCard = {
   },
   role: "あなたは親切で役立つAIコンパニオンです。ユーザーとの会話を楽しみ、必要に応じてサポートを提供します。",
   actions: { speakAction },
-  knowledge: {},
+  knowledge: { currentTimeKnowledge },
   events: {
     params: {
       title: "基本判断パラメータ",
@@ -72,7 +79,7 @@ export const companionCard: CompanionCard = {
 
 const companion = new CompanionAgent(
   companionCard,
-  anthropic("claude-4-sonnet-20250514")
+  google("gemini-2.0-flash")
 );
 const server = new CompanionServer(companion, 4000);
 await server.start();

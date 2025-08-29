@@ -18,6 +18,8 @@
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "dependencies": {
-        "@ai-sdk/anthropic": "1.2.12"
+        "@ai-sdk/anthropic": "2.0.6",
+        "@ai-sdk/google": "2.0.8",
+        "zod": "^3.25.76"
     }
 }
